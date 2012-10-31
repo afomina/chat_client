@@ -6,16 +6,18 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import java.awt.FlowLayout;
+import java.awt.event.KeyEvent;
+
 import javax.swing.JLabel;
 import javax.swing.JButton;
 
 @SuppressWarnings("serial")
-class LogInFrame extends JFrame {
+public class LogInFrame extends JFrame {
 
-	private JPanel contentPane;
 	JTextField login;
 	JPasswordField passwordField;
 	JButton btnLogIn;
+	private JPanel contentPane;
 
 	public LogInFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,6 +44,7 @@ class LogInFrame extends JFrame {
 		contentPane.add(passwordField);
 
 		btnLogIn = new JButton("Log in");
+		btnLogIn.setMnemonic(KeyEvent.VK_ENTER);
 		contentPane.add(btnLogIn);
 
 	}
