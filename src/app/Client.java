@@ -30,11 +30,13 @@ public class Client {
 	DataInputStream in = new DataInputStream(sin);
 	DataOutputStream out = new DataOutputStream(sout);
 
+	InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
+
 	public static final int AUTH = 1;
 
 	public Client() throws UnknownHostException, IOException {
 		logInFrame.setVisible(true);
-		clientSocket = new Socket(InetAddress.getByName("127.0.0.1"), 6680);
+		clientSocket = new Socket(inetAddress, 6680);
 		sin = clientSocket.getInputStream();
 		sout = clientSocket.getOutputStream();
 
@@ -44,9 +46,9 @@ public class Client {
 	}
 
 	public void sendData() throws LoginException, IOException {
-		 out.writeByte(AUTH);
 
 		out.writeUTF(login);
+		out.flush();
 		out.writeUTF(password);
 		out.flush();
 
@@ -68,10 +70,9 @@ public class Client {
 				chat.chatPane.setText(text + answer + "\n");
 
 			} catch (SocketException se) {
-				showErrorMessage("Server connection failed");
-				chat.chatPane.setEnabled(false);
+				showErrorMessage("Connection failed");
 			} catch (IOException e) {
-
+				showErrorMessage("Cannot connect to server");
 			}
 
 		}
@@ -93,8 +94,7 @@ public class Client {
 		} catch (UnknownHostException e) {
 			showErrorMessage("Cannot connect to server");
 		} catch (IOException e) {
-			showErrorMessage("An error has occured, please try again");
-			System.exit(1);
+			showErrorMessage("Cannot connect to server");
 		}
 	}
 
@@ -121,7 +121,7 @@ public class Client {
 					showErrorMessage("Login or password uncorrect");
 					return;
 				} catch (IOException e1) {
-					showErrorMessage("An error has occured, please try again");
+					showErrorMessage("Cannot connect to server");
 					return;
 				}
 				logInFrame.setVisible(false);
