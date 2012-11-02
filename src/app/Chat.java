@@ -9,10 +9,9 @@ import javax.swing.JEditorPane;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.JButton;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 
 @SuppressWarnings("serial")
 public class Chat extends JFrame {
@@ -34,47 +33,41 @@ public class Chat extends JFrame {
 		contentPane = new JLayeredPane();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[] { 424, 0 };
-		gbl_contentPane.rowHeights = new int[] { 139, 50, 28, 0 };
-		gbl_contentPane.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
-		gbl_contentPane.rowWeights = new double[] { 0.0, 0.0, 0.0,
-				Double.MIN_VALUE };
-		contentPane.setLayout(gbl_contentPane);
 
 		chatPane = new JEditorPane();
 		chatPane.setFocusCycleRoot(false);
 		chatPane.setEditable(false);
 		chatPane.setBorder(new LineBorder(borderColor));
-		GridBagConstraints gbc_chatPane = new GridBagConstraints();
-		gbc_chatPane.fill = GridBagConstraints.BOTH;
-		gbc_chatPane.insets = new Insets(0, 0, 5, 0);
-		gbc_chatPane.gridx = 0;
-		gbc_chatPane.gridy = 0;
 		JScrollPane scrollPane = new JScrollPane(chatPane);
 		scrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		contentPane.add(scrollPane, gbc_chatPane);
 
 		msgField = new JTextField();
 		msgField.setFocusCycleRoot(true);
-		GridBagConstraints gbc_msgField = new GridBagConstraints();
-		gbc_msgField.fill = GridBagConstraints.BOTH;
-		gbc_msgField.insets = new Insets(0, 0, 5, 0);
-		gbc_msgField.gridx = 0;
-		gbc_msgField.gridy = 1;
-		contentPane.add(msgField, gbc_msgField);
 		msgField.setColumns(10);
 		msgField.setBorder(new LineBorder(borderColor));
 
 		sendButton = new JButton(
 				"\u041E\u0442\u043F\u0440\u0430\u0432\u0438\u0442\u044C");
-
-		GridBagConstraints gbc_sendButton = new GridBagConstraints();
-		gbc_sendButton.anchor = GridBagConstraints.NORTHEAST;
-		gbc_sendButton.gridx = 0;
-		gbc_sendButton.gridy = 2;
-		contentPane.add(sendButton, gbc_sendButton);
+		GroupLayout gl_contentPane = new GroupLayout(contentPane);
+		gl_contentPane.setHorizontalGroup(
+			gl_contentPane.createParallelGroup(Alignment.LEADING)
+				.addComponent(msgField, GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addGap(335)
+					.addComponent(sendButton))
+				.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+		);
+		gl_contentPane.setVerticalGroup(
+			gl_contentPane.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+					.addGap(5)
+					.addComponent(msgField, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+					.addGap(6)
+					.addComponent(sendButton))
+		);
+		contentPane.setLayout(gl_contentPane);
 
 		setVisible(true);
 	}
