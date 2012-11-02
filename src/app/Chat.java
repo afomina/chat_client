@@ -53,7 +53,7 @@ public class Chat extends JFrame {
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addComponent(msgField, GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
-				.addGroup(gl_contentPane.createSequentialGroup()
+				.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
 					.addGap(335)
 					.addComponent(sendButton))
 				.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
