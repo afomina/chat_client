@@ -1,9 +1,8 @@
 package app;
 
 import java.awt.Color;
-
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.JLayeredPane;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JEditorPane;
@@ -26,13 +25,13 @@ public class Chat extends JFrame {
 	static final int X2 = 450;
 	static final int Y1 = 100;
 	static final int Y2 = 260;
-	private JPanel contentPane;
+	private JLayeredPane contentPane;
 
 	public Chat() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 260);
 		setMinimumSize(getSize());
-		contentPane = new JPanel();
+		contentPane = new JLayeredPane();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
@@ -78,6 +77,5 @@ public class Chat extends JFrame {
 		contentPane.add(sendButton, gbc_sendButton);
 
 		setVisible(true);
-
 	}
 }

@@ -5,8 +5,6 @@ import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -24,29 +22,21 @@ public class Client {
 	Chat chat;
 	String login;
 	String password;
-	InputStream sin;
-	OutputStream sout;
 
-	DataInputStream in = new DataInputStream(sin);
-	DataOutputStream out = new DataOutputStream(sout);
+	DataInputStream in;
+	DataOutputStream out;
 
-	InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
-
-	public static final int AUTH = 1;
+	InetAddress inetAddress = InetAddress.getByName("172.18.68.151");
 
 	public Client() throws UnknownHostException, IOException {
 		logInFrame.setVisible(true);
 		clientSocket = new Socket(inetAddress, 6680);
-		sin = clientSocket.getInputStream();
-		sout = clientSocket.getOutputStream();
 
-		in = new DataInputStream(sin);
-		out = new DataOutputStream(sout);
-
+		in = new DataInputStream(clientSocket.getInputStream());
+		out = new DataOutputStream(clientSocket.getOutputStream());
 	}
 
 	public void sendData() throws LoginException, IOException {
-
 		out.writeUTF(login);
 		out.flush();
 		out.writeUTF(password);
@@ -56,7 +46,6 @@ public class Client {
 		if (!serverAnswer.equals(login)) {
 			throw new LoginException();
 		}
-
 	}
 
 	public void sendMessage(String message) {
@@ -68,13 +57,11 @@ public class Client {
 				String answer = in.readUTF();
 				String text = chat.chatPane.getText();
 				chat.chatPane.setText(text + answer + "\n");
-
 			} catch (SocketException se) {
 				showErrorMessage("Connection failed");
 			} catch (IOException e) {
 				showErrorMessage("Cannot connect to server");
 			}
-
 		}
 	}
 
@@ -128,7 +115,6 @@ public class Client {
 				chat();
 			}
 		}
-
 	}
 
 	class MessageListener implements ActionListener {
