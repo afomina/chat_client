@@ -13,7 +13,7 @@ import java.net.UnknownHostException;
 import javax.security.auth.login.LoginException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
+ 
 public class Client {
 	public static final int PORT = 6680;
 	public InetAddress inetAddress;
