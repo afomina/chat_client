@@ -15,41 +15,44 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Client {
-	Socket clientSocket;
+	public static final int PORT = 6680;
+	public InetAddress inetAddress;
 
+	Socket clientSocket;
 	LogInFrame logInFrame = new LogInFrame();
 	Chat chat;
 	String login;
 	String password;
-
 	DataInputStream in;
 	DataOutputStream out;
 
-	InetAddress inetAddress;
-
 	public Client() {
+		LogInListener loginListener = new LogInListener();
+		logInFrame.btnLogIn.addActionListener(loginListener);
+		logInFrame.passwordField.addActionListener(loginListener);
+	}
+
+	public void showGUI() {
+		logInFrame.setVisible(true);
+	}
+
+	public void connect() {
 		try {
 			inetAddress = InetAddress.getByName("172.18.68.151");
-			clientSocket = new Socket(inetAddress, 6680);
+			clientSocket = new Socket(inetAddress, PORT);
 
 			in = new DataInputStream(clientSocket.getInputStream());
 			out = new DataOutputStream(clientSocket.getOutputStream());
-
-			LogInListener loginListener = new LogInListener();
-			logInFrame.btnLogIn.addActionListener(loginListener);
-			logInFrame.passwordField.addActionListener(loginListener);
-
-			logInFrame.setVisible(true);
 		} catch (UnknownHostException e) {
 			showErrorMessage("Cannot connect to server");
-			System.exit(1);
 		} catch (IOException e) {
 			showErrorMessage("Cannot connect to server");
-			System.exit(2);
 		}
 	}
 
 	public void login(String login, String password) {
+		connect();
+
 		this.login = login;
 		this.password = password;
 
@@ -72,7 +75,7 @@ public class Client {
 		}
 	}
 
-	 void chat() {
+	void chat() {
 		chat = new Chat();
 		MessageListener msgListener = this.new MessageListener();
 		chat.msgField.addActionListener(msgListener);
@@ -97,7 +100,7 @@ public class Client {
 		}
 	}
 
-	public void showErrorMessage(String message) {
+	void showErrorMessage(String message) {
 		JOptionPane.showMessageDialog(new JFrame(), message, "Error",
 				JOptionPane.ERROR_MESSAGE);
 	}

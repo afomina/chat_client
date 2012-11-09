@@ -21,14 +21,14 @@ public class Chat extends JFrame {
 	JButton sendButton;
 	static final Color borderColor = new Color(51, 153, 204);
 	static final int X1 = 100;
-	static final int X2 = 450;
+	static final int X2 = 460;
 	static final int Y1 = 100;
 	static final int Y2 = 260;
 	private JLayeredPane contentPane;
 
 	public Chat() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 260);
+		setBounds(X1, Y1, X2, Y2);
 		setMinimumSize(getSize());
 		contentPane = new JLayeredPane();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
