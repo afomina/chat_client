@@ -13,11 +13,12 @@ import java.net.UnknownHostException;
 import javax.security.auth.login.LoginException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
- 
+
 public class Client {
 	public static final int PORT = 6680;
-	public InetAddress inetAddress;
 
+	static final String ADDRESS = "172.18.68.151";
+	InetAddress inetAddress;
 	Socket clientSocket;
 	LogInFrame logInFrame = new LogInFrame();
 	Chat chat;
@@ -38,7 +39,7 @@ public class Client {
 
 	public void connect() {
 		try {
-			inetAddress = InetAddress.getByName("172.18.68.151");
+			inetAddress = InetAddress.getByName(ADDRESS);
 			clientSocket = new Socket(inetAddress, PORT);
 
 			in = new DataInputStream(clientSocket.getInputStream());
