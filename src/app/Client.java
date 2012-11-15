@@ -22,14 +22,14 @@ public class Client {
 	Socket connectSocket;
 	LogInFrame logInFrame = new LogInFrame();
 	Chat chat;
-	String login;
-	String password;
+	volatile String login;
+	volatile String password;
 	volatile DataInputStream in;
 	volatile DataOutputStream out;
 	volatile DataInputStream authIn;
 	volatile DataOutputStream authOut;
 
-	// Thread sendThread;
+	Thread sendThread;
 
 	public Client() {
 		LogInListener loginListener = new LogInListener();
@@ -78,6 +78,23 @@ public class Client {
 		}
 	}
 
+	void sendData() {
+		try {
+			out.writeUTF(login);
+			out.flush();
+			out.writeUTF(password);
+			out.flush();
+			String serverAnswer = in.readUTF();
+			if (!serverAnswer.equals(login)) {
+				throw new LoginException();
+			}
+		} catch (LoginException e1) {
+			showErrorMessage("Login or password uncorrect");
+		} catch (IOException e1) {
+			showErrorMessage("Cannot connect to server");
+		}
+	}
+
 	void chat() {
 		chat = new Chat();
 
@@ -86,7 +103,9 @@ public class Client {
 		chatThread.start();
 
 		SendButtonListener msgListener = this.new SendButtonListener();
-		// sendThread = new Thread(msgListener);
+		sendThread = new Thread(msgListener);
+		sendThread.setDaemon(true);
+
 		chat.msgField.addActionListener(msgListener);
 		chat.sendButton.addActionListener(msgListener);
 	}
@@ -110,31 +129,15 @@ public class Client {
 				JOptionPane.ERROR_MESSAGE);
 	}
 
-	void sendData() {
-		new Thread(new Runnable() {
-			public void run() {
-				try {
-					authOut.writeUTF(login);
-					authOut.flush();
-					authOut.writeUTF(password);
-					authOut.flush();
-					String serverAnswer = authIn.readUTF();
-					if (!serverAnswer.equals(login)) {
-						throw new LoginException();
-					}
-				} catch (LoginException e1) {
-					showErrorMessage("Login or password uncorrect");
-				} catch (IOException e1) {
-					showErrorMessage("Cannot connect to server");
-				}
-			}
-		}).start();
-	}
-
-	class LogInListener implements ActionListener {
+	class LogInListener implements ActionListener, Runnable {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			new Thread(this).start();
+		}
+
+		@Override
+		public void run() {
 			String login = logInFrame.login.getText();
 			String pass = new String(logInFrame.passwordField.getPassword());
 			login(login, pass);
@@ -147,7 +150,8 @@ public class Client {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			message = chat.msgField.getText();
-			((Runnable) this).run();
+
+			sendThread.run();
 		}
 
 		@Override
