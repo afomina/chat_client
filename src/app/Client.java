@@ -8,24 +8,28 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
-
 import javax.security.auth.login.LoginException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Client {
 	public static final int PORT = 6680;
-
+	static final int CONNECT_PORT = 6681;
 	static final String ADDRESS = "172.18.68.151";
+	static final int AUTH = 1;
 	InetAddress inetAddress;
-	Socket clientSocket;
+	Socket messageSocket;
+	Socket connectSocket;
 	LogInFrame logInFrame = new LogInFrame();
 	Chat chat;
 	String login;
 	String password;
-	DataInputStream in;
-	DataOutputStream out;
+	volatile DataInputStream in;
+	volatile DataOutputStream out;
+	volatile DataInputStream authIn;
+	volatile DataOutputStream authOut;
+
+	// Thread sendThread;
 
 	public Client() {
 		LogInListener loginListener = new LogInListener();
@@ -40,12 +44,18 @@ public class Client {
 	public void connect() {
 		try {
 			inetAddress = InetAddress.getByName(ADDRESS);
-			clientSocket = new Socket(inetAddress, PORT);
 
-			in = new DataInputStream(clientSocket.getInputStream());
-			out = new DataOutputStream(clientSocket.getOutputStream());
-		} catch (UnknownHostException e) {
-			showErrorMessage("Cannot connect to server");
+			connectSocket = new Socket(inetAddress, CONNECT_PORT);
+			authIn = new DataInputStream(connectSocket.getInputStream());
+			authOut = new DataOutputStream(connectSocket.getOutputStream());
+
+			messageSocket = new Socket(inetAddress, PORT);
+			in = new DataInputStream(messageSocket.getInputStream());
+			out = new DataOutputStream(messageSocket.getOutputStream());
+
+			DataOutputStream connectOut = new DataOutputStream(
+					connectSocket.getOutputStream());
+			connectOut.writeInt(AUTH);
 		} catch (IOException e) {
 			showErrorMessage("Cannot connect to server");
 		}
@@ -62,15 +72,7 @@ public class Client {
 		} else if (password.equals("")) {
 			showErrorMessage("Please enter your password");
 		} else {
-			try {
-				sendData();
-			} catch (LoginException e1) {
-				showErrorMessage("Login or password uncorrect");
-				return;
-			} catch (IOException e1) {
-				showErrorMessage("Cannot connect to server");
-				return;
-			}
+			sendData();
 			logInFrame.setVisible(false);
 			chat();
 		}
@@ -78,20 +80,22 @@ public class Client {
 
 	void chat() {
 		chat = new Chat();
-		MessageListener msgListener = this.new MessageListener();
+
+		Thread chatThread = new Thread(new ChatMessageListener());
+		chatThread.setDaemon(true);
+		chatThread.start();
+
+		SendButtonListener msgListener = this.new SendButtonListener();
+		// sendThread = new Thread(msgListener);
 		chat.msgField.addActionListener(msgListener);
 		chat.sendButton.addActionListener(msgListener);
 	}
 
-	void sendMessage(String message) {
+	void sendMessage(final String message) {
 		if (!message.equals("")) {
 			try {
 				out.writeUTF(login + ": " + message);
 				out.flush();
-
-				String answer = in.readUTF();
-				String text = chat.chatPane.getText();
-				chat.chatPane.setText(text + answer + "\n");
 			} catch (SocketException se) {
 				showErrorMessage("Connection failed");
 			} catch (IOException e) {
@@ -106,33 +110,62 @@ public class Client {
 				JOptionPane.ERROR_MESSAGE);
 	}
 
-	void sendData() throws LoginException, IOException {
-		out.writeUTF(login);
-		out.flush();
-		out.writeUTF(password);
-		out.flush();
-
-		String serverAnswer = in.readUTF();
-		if (!serverAnswer.equals(login)) {
-			throw new LoginException();
-		}
+	void sendData() {
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					authOut.writeUTF(login);
+					authOut.flush();
+					authOut.writeUTF(password);
+					authOut.flush();
+					String serverAnswer = authIn.readUTF();
+					if (!serverAnswer.equals(login)) {
+						throw new LoginException();
+					}
+				} catch (LoginException e1) {
+					showErrorMessage("Login or password uncorrect");
+				} catch (IOException e1) {
+					showErrorMessage("Cannot connect to server");
+				}
+			}
+		}).start();
 	}
 
 	class LogInListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			login(logInFrame.login.getText(), new String(
-					logInFrame.passwordField.getPassword()));
+			String login = logInFrame.login.getText();
+			String pass = new String(logInFrame.passwordField.getPassword());
+			login(login, pass);
 		}
 	}
 
-	class MessageListener implements ActionListener {
+	class SendButtonListener implements ActionListener, Runnable {
+		String message = "";
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			String message = chat.msgField.getText();
+			message = chat.msgField.getText();
+			((Runnable) this).run();
+		}
+
+		@Override
+		public void run() {
 			sendMessage(message);
+		}
+	}
+
+	class ChatMessageListener implements Runnable {
+		public void run() {
+			while (true) {
+				try {
+					String message = in.readUTF();
+					chat.showMessage(message);
+				} catch (IOException e) {
+					showErrorMessage("Connection failed");
+				}
+			}
 		}
 	}
 }

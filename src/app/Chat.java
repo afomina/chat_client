@@ -50,25 +50,33 @@ public class Chat extends JFrame {
 		sendButton = new JButton(
 				"\u041E\u0442\u043F\u0440\u0430\u0432\u0438\u0442\u044C");
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
-		gl_contentPane.setHorizontalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addComponent(msgField, GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
-				.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
-					.addGap(335)
-					.addComponent(sendButton))
-				.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
-		);
-		gl_contentPane.setVerticalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
-					.addGap(5)
-					.addComponent(msgField, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-					.addGap(6)
-					.addComponent(sendButton))
-		);
+		gl_contentPane.setHorizontalGroup(gl_contentPane
+				.createParallelGroup(Alignment.LEADING)
+				.addComponent(msgField, GroupLayout.DEFAULT_SIZE, 424,
+						Short.MAX_VALUE)
+				.addGroup(
+						Alignment.TRAILING,
+						gl_contentPane.createSequentialGroup().addGap(335)
+								.addComponent(sendButton))
+				.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 424,
+						Short.MAX_VALUE));
+		gl_contentPane.setVerticalGroup(gl_contentPane.createParallelGroup(
+				Alignment.LEADING).addGroup(
+				gl_contentPane
+						.createSequentialGroup()
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE,
+								133, Short.MAX_VALUE)
+						.addGap(5)
+						.addComponent(msgField, GroupLayout.PREFERRED_SIZE, 45,
+								GroupLayout.PREFERRED_SIZE).addGap(6)
+						.addComponent(sendButton)));
 		contentPane.setLayout(gl_contentPane);
 
 		setVisible(true);
+	}
+
+	void showMessage(String message) {
+		String text = chatPane.getText();
+		chatPane.setText(text + message + "\n");
 	}
 }
