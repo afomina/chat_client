@@ -104,13 +104,12 @@ public class Client {
 
 		SendButtonListener msgListener = this.new SendButtonListener();
 		sendThread = new Thread(msgListener);
-		sendThread.setDaemon(true);
 
 		chat.msgField.addActionListener(msgListener);
 		chat.sendButton.addActionListener(msgListener);
 	}
 
-	void sendMessage(final String message) {
+	synchronized void sendMessage(final String message) {
 		if (!message.equals("")) {
 			try {
 				out.writeUTF(login + ": " + message);
@@ -157,6 +156,7 @@ public class Client {
 		@Override
 		public void run() {
 			sendMessage(message);
+			Thread.yield();
 		}
 	}
 
