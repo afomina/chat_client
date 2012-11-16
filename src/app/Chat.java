@@ -16,14 +16,14 @@ import javax.swing.GroupLayout.Alignment;
 @SuppressWarnings("serial")
 public class Chat extends JFrame {
 
-	JTextField msgField;
-	JEditorPane chatPane;
-	JButton sendButton;
 	static final Color borderColor = new Color(51, 153, 204);
 	static final int X1 = 100;
 	static final int X2 = 460;
 	static final int Y1 = 100;
 	static final int Y2 = 260;
+	JTextField msgField;
+	JEditorPane chatPane;
+	JButton sendButton;
 	private JLayeredPane contentPane;
 
 	public Chat() {

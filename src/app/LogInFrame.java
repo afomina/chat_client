@@ -14,14 +14,13 @@ import java.awt.Insets;
 
 @SuppressWarnings("serial")
 public class LogInFrame extends JFrame {
-
-	JTextField login;
-	JPasswordField passwordField;
-	JButton btnLogIn;
 	static final int X1 = 100;
 	static final int X2 = 250;
 	static final int Y1 = 100;
 	static final int Y2 = 200;
+	JTextField login;
+	JPasswordField passwordField;
+	JButton btnLogIn;
 	private JPanel contentPane;
 	private JLabel label;
 	private JLabel label_1;
