@@ -2,6 +2,8 @@ package app;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -107,7 +109,7 @@ public class Client {
 
 		sendThread = new Thread(msgListener);
 
-		chat.msgField.addActionListener(msgListener);
+		chat.msgField.addKeyListener(msgListener);
 		chat.sendButton.addActionListener(msgListener);
 	}
 
@@ -133,7 +135,7 @@ public class Client {
 		}
 	}
 
-	class SendButtonListener implements ActionListener, Runnable {
+	class SendButtonListener implements KeyListener, ActionListener, Runnable {
 		String message = "";
 
 		@Override
@@ -146,6 +148,23 @@ public class Client {
 		public void run() {
 			sendMessage(message);
 			Thread.yield();
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				actionPerformed(null);
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
 		}
 	}
 

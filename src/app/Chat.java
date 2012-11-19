@@ -6,25 +6,27 @@ import javax.swing.JLayeredPane;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JEditorPane;
-import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.JButton;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import java.awt.Component;
 
 @SuppressWarnings("serial")
 public class Chat extends JFrame {
 
 	static final Color borderColor = new Color(51, 153, 204);
 	static final int X1 = 100;
-	static final int X2 = 460;
+	static final int X2 = 455;
 	static final int Y1 = 100;
 	static final int Y2 = 260;
-	JTextField msgField;
 	JEditorPane chatPane;
 	JButton sendButton;
+	JEditorPane msgField;
 	private JLayeredPane contentPane;
+	private JScrollPane scrollPane_2;
 
 	public Chat() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,34 +44,38 @@ public class Chat extends JFrame {
 		scrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-		msgField = new JTextField();
-		msgField.setFocusCycleRoot(true);
-		msgField.setColumns(10);
-		msgField.setBorder(new LineBorder(borderColor));
-
 		sendButton = new JButton(
 				"\u041E\u0442\u043F\u0440\u0430\u0432\u0438\u0442\u044C");
+
+		scrollPane_2 = new JScrollPane((Component) null);
+		scrollPane_2
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
-		gl_contentPane.setHorizontalGroup(gl_contentPane
-				.createParallelGroup(Alignment.LEADING)
-				.addComponent(msgField, GroupLayout.DEFAULT_SIZE, 424,
-						Short.MAX_VALUE)
-				.addGroup(
-						Alignment.TRAILING,
-						gl_contentPane.createSequentialGroup().addGap(335)
-								.addComponent(sendButton))
-				.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 424,
-						Short.MAX_VALUE));
-		gl_contentPane.setVerticalGroup(gl_contentPane.createParallelGroup(
-				Alignment.LEADING).addGroup(
-				gl_contentPane
-						.createSequentialGroup()
-						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE,
-								133, Short.MAX_VALUE)
-						.addGap(5)
-						.addComponent(msgField, GroupLayout.PREFERRED_SIZE, 45,
-								GroupLayout.PREFERRED_SIZE).addGap(6)
-						.addComponent(sendButton)));
+		gl_contentPane.setHorizontalGroup(
+			gl_contentPane.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
+						.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addContainerGap(335, Short.MAX_VALUE)
+							.addComponent(sendButton)))
+					.addContainerGap())
+		);
+		gl_contentPane.setVerticalGroup(
+			gl_contentPane.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(sendButton))
+		);
+
+		msgField = new JEditorPane();
+		msgField.setFocusCycleRoot(false);
+		msgField.setBorder(new LineBorder(borderColor));
+		scrollPane_2.setViewportView(msgField);
 		contentPane.setLayout(gl_contentPane);
 
 		setVisible(true);
